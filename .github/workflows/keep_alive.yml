@@ -1,0 +1,26 @@
+name: Keep HF Space Alive
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # Runs every 6 hours
+  workflow_dispatch:
+
+jobs:
+  restart-space:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install huggingface_hub requests
+
+      - name: Run Space Keeper Script
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python restart_space.py
