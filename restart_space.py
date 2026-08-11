@@ -3,7 +3,7 @@ import requests
 from huggingface_hub import HfApi
 
 token = os.getenv("HF_TOKEN")
-space_id = "your-username/your-space-name"  # Replace with actual space ID
+space_id = "ajay0987/AI-Powered-Document-Analyser"  # Replace with actual space ID
 
 if token:
     api = HfApi(token=token)
