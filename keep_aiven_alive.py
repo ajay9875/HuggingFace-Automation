@@ -2,11 +2,12 @@ import os
 import requests
 
 AIVEN_TOKEN = os.getenv("AIVEN_TOKEN")
-PROJECT_NAME = "budgetwisely123"  # From your screenshot
-SERVICE_NAME = "postgresql"        # From your screenshot
+PROJECT_NAME = "budgetwisely123"
+SERVICE_NAME = "postgresql"
 
+# ✅ Fixed header format (changed 'aivenbearer' to 'aivenv1')
 headers = {
-    "Authorization": f"aivenbearer {AIVEN_TOKEN}",
+    "Authorization": f"aivenv1 {AIVEN_TOKEN}",
     "Content-Type": "application/json"
 }
 
@@ -19,18 +20,17 @@ if AIVEN_TOKEN:
         service_data = response.json().get("service", {})
         state = service_data.get("state")
         
-        # State can be 'RUNNING', 'POWERED_OFF', 'REBUILDING', etc.
-        if state == "POWERED_OFF":
-            print(f"Service '{SERVICE_NAME}' is currently POWERED OFF. Powering it on...")
+        if state in ["POWERED_OFF", "POWERING_OFF"]:
+            print(f"Service '{SERVICE_NAME}' is currently {state}. Powering it on...")
             
-            # Send API update request to power on the service
-            update_payload = {"power_on": True}
-            patch_response = requests.put(url, json=update_payload, headers=headers)
+            # Correct payload to power on Aiven services
+            update_payload = {"powered": True}
+            put_response = requests.put(url, json=update_payload, headers=headers)
             
-            if patch_response.status_code == 200:
-                print("Power-on request sent successfully!")
+            if put_response.status_code == 200:
+                print("Power-on request accepted! Service is starting up.")
             else:
-                print(f"Failed to power on service: {patch_response.status_code} - {patch_response.text}")
+                print(f"Failed to power on service: {put_response.status_code} - {put_response.text}")
         else:
             print(f"Service '{SERVICE_NAME}' is active ({state}). No action needed.")
     else:
