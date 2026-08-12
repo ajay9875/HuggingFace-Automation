@@ -3,7 +3,8 @@ import requests
 from huggingface_hub import HfApi
 
 token = os.getenv("HF_TOKEN")
-space_id = "ajay0987/AI-Powered-Document-Analyser"  # Replace with actual space ID
+space_id = "ajay0987/AI-Powered-Document-Analyser"
+space_url = f"https://{space_id.replace('/', '-')}.hf.space"
 
 if token:
     api = HfApi(token=token)
@@ -13,9 +14,14 @@ if token:
         print(f"Space is currently {runtime.stage}. Triggering restart...")
         api.restart_space(repo_id=space_id)
     else:
-        print(f"Space is active ({runtime.stage}).")
+        # Send HTTP traffic to force HF to reset the 48-hour inactivity timer
+        print(f"Space is active ({runtime.stage}). Sending ping to reset timer...")
+        try:
+            requests.get(space_url, timeout=10)
+            print("Ping successful! Timer reset.")
+        except Exception as e:
+            print(f"Ping failed: {e}")
 else:
     # Fallback HTTP ping
-    url = f"https://{space_id.replace('/', '-')}.hf.space"
-    requests.get(url)
-    print("Ping sent to Space URL.")
+    requests.get(space_url, timeout=10)
+    print("Fallback ping sent.")
