@@ -1,4 +1,4 @@
-name: Keep Services Alive
+name: Keep Aiven Services Alive
 
 on:
   schedule:
