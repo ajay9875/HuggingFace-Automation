@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  keep-alive:
+  keep-aiven-alive:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
@@ -20,12 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install huggingface_hub requests psycopg2-binary PyMySQL
-
-      - name: Run HF Space Keeper Script
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: python restart_space.py
+          pip install requests psycopg2-binary PyMySQL
 
       - name: Run Aiven Keeper Script
         env:
