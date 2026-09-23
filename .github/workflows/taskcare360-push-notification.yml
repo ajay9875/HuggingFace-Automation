@@ -1,0 +1,34 @@
+name: TaskCare360 Push Scheduler
+
+on:
+  schedule:
+    # Every 1 minute (testing). GitHub may delay 1-15 min under load.
+    - cron: '* * * * *'
+  
+  # Allows manual trigger from the GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  trigger-push:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - name: Hit TaskCare360 push endpoint
+        run: |
+          echo "🚀 Triggering at $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+
+          HTTP_CODE=$(curl -s -o /tmp/response.txt -w "%{http_code}" \
+            "https://TaskCare360.pythonanywhere.com/api/send-step-push?secret=${{ secrets.SCHEDULER_SECRET }}")
+
+          echo "HTTP Status: $HTTP_CODE"
+          echo "Response Body:"
+          cat /tmp/response.txt
+          echo ""
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "❌ Request failed with HTTP $HTTP_CODE"
+            exit 1
+          fi
+
+          echo "✅ Push scheduler triggered successfully"
