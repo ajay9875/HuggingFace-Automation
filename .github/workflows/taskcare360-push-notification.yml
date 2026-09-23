@@ -14,21 +14,18 @@ jobs:
     timeout-minutes: 2
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
       - name: Hit TaskCare360 push endpoint
-        run: |
-          echo "🚀 Triggering at $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
-
-          HTTP_CODE=$(curl -s -o /tmp/response.txt -w "%{http_code}" \
-            "https://TaskCare360.pythonanywhere.com/api/send-step-push?secret=${{ secrets.SCHEDULER_SECRET }}")
-
-          echo "HTTP Status: $HTTP_CODE"
-          echo "Response Body:"
-          cat /tmp/response.txt
-          echo ""
-
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "❌ Request failed with HTTP $HTTP_CODE"
-            exit 1
-          fi
-
-          echo "✅ Push scheduler triggered successfully"
+        env:
+          SCHEDULER_SECRET: ${{ secrets.SCHEDULER_SECRET }}
+        run: python .github/scripts/taskcare360_push_trigger.py
