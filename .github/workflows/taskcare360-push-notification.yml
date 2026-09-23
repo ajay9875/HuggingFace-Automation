@@ -3,7 +3,7 @@ name: TaskCare360 Push Scheduler
 on:
   schedule:
     # Every 1 minute (testing). GitHub may delay 1-15 min under load.
-    - cron: '* * * * *'
+    - cron: '*/5 * * * *'
   
   # Allows manual trigger from the GitHub Actions tab
   workflow_dispatch:
