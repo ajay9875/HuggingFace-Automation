@@ -28,4 +28,4 @@ jobs:
       - name: Hit TaskCare360 push endpoint
         env:
           SCHEDULER_SECRET: ${{ secrets.SCHEDULER_SECRET }}
-        run: python .github/taskcare360_push_trigger.py
+        run: python taskcare360_push_trigger.py
