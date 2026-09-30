@@ -26,10 +26,11 @@ def main() -> int:
         return 1
 
     # --- 2. Build the request URL ---
-    url = f"{BASE_URL}{ENDPOINT}"
+    # ✅ Secret goes in the URL PATH
+    url = f"{BASE_URL}{ENDPOINT}/{secret}"
 
     print(f"🚀 Triggering at {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}")
-    print(f"🌐 URL: {url}?secret=***")
+    print(f"🌐 URL: {BASE_URL}{ENDPOINT}/***")
 
     # --- 3. Fire the request ---
     try:
