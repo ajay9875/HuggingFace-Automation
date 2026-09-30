@@ -34,7 +34,9 @@ def main() -> int:
 
     # --- 3. Fire the request ---
     try:
-        response = requests.get(url, params={"secret": secret}, timeout=TIMEOUT)
+        #response = requests.get(url, params={"secret": secret}, timeout=TIMEOUT)
+        # ✅ No params — the URL already contains the secret
+        response = requests.get(url, timeout=TIMEOUT)
 
         print(f"HTTP Status: {response.status_code}")
         print(f"Response Body:")
